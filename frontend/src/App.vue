@@ -2,7 +2,7 @@
   <el-container direction="vertical"
     class="app">
     <Header/>
-    <el-container>
+    <el-container class="app-container">
       <Aside />
       <el-container direction="vertical">
         <el-main>
@@ -18,12 +18,13 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Aside from "@/components/Aside";
+
 export default {
   name: "App",
   components: {
     Header,
     Footer,
-    Aside
+    Aside,
   }
 };
 </script>
@@ -37,5 +38,9 @@ body {
 .app {
   height: 100vh;
   width: 100vw;
+}
+
+.app-container {
+  margin-top: 50px;
 }
 </style>

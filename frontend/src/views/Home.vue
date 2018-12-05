@@ -1,14 +1,16 @@
 <template>
   <div class="home">
-    <h1>This is an home page</h1>
+    <ViewsTitleInfo title="Home 系统概览" detail="查看当前系统各项指标使用情况"/>
   </div>
 </template>
 
 <script>
+import ViewsTitleInfo from '@/components/ViewsTitleInfo'
 
 export default {
   name: 'home',
   components: {
+    ViewsTitleInfo
   }
 }
 </script>

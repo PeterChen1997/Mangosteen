@@ -5,3 +5,7 @@
 .el-menu {
   border-right: none;
 }
+
+.el-main {
+  padding-top: 0;
+}

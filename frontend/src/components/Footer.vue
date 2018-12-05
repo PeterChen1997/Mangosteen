@@ -1,7 +1,5 @@
 <template>
   <el-footer class="footer">
-    <div class="icon-list"></div>
-
     <div class="desc">
       <p>Copyright © Peter Chen 2018
         <!-- <br>Developed by <a target="_blank" rel="noopener noreferrer" href="https://github.com/PeterChen1997">PeterChen</a> |
@@ -40,6 +38,7 @@ export default {
 }
 
 .desc {
+  font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
