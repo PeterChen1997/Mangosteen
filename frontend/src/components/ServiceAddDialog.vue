@@ -1,6 +1,6 @@
 <template>
   <div class="dialog">
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+    <el-dialog title="收货地址" :visible.sync="isShow">
       <el-form :model="form">
         <el-form-item label="活动名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -13,8 +13,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="() => isShow = false">取 消</el-button>
+        <el-button type="primary" @click="isShow = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -22,23 +22,32 @@
 
 <script>
 export default {
-  name: 'serviceAddDialog',
+  name: "serviceAddDialog",
+  props: ["isDialogShow"],
+  computed: {
+    isShow: {
+      set: function(newValue) {
+        this.$emit('update:isDialogShow', newValue)
+      },
+      get: function() {
+        return this.isDialogShow
+      }
+    }
+  },
   data() {
     return {
-      dialogTableVisible: true,
-        dialogFormVisible: true,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: true,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        formLabelWidth: '120px'
-    }
+      form: {
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: true,
+        type: [],
+        resource: "",
+        desc: ""
+      },
+      formLabelWidth: "120px"
+    };
   }
 };
 </script>

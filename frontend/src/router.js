@@ -19,6 +19,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "services" */ './views/Services.vue')
     },
     {
+      path: '/services/addService',
+      name: 'addServices',
+      component: () => import(/* webpackChunkName: "addService" */ './views/AddService.vue')
+    },
+    {
       path: '/options',
       name: 'options',
       component: () => import(/* webpackChunkName: "options" */ './views/Options.vue')

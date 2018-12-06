@@ -1,16 +1,13 @@
 <template>
-  <el-container direction="vertical"
-    class="app">
+  <el-container direction="vertical" class="app">
     <Header/>
-    <el-container class="app-container">
-      <Aside />
-      <el-container direction="vertical">
-        <el-main>
-          <router-view></router-view>
-        </el-main>
-        <Footer/>
-      </el-container>
+    <el-container class="app-container" >
+      <Aside/>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
+    <Footer/>
   </el-container>
 </template>
 
@@ -24,7 +21,7 @@ export default {
   components: {
     Header,
     Footer,
-    Aside,
+    Aside
   }
 };
 </script>
