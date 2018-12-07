@@ -6,4 +6,6 @@
 module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
+  router.get('/services', controller.services.index);
+  router.get('/services/download', controller.services.download);
 };

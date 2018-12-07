@@ -12,11 +12,14 @@
     </el-steps>
 
     <div class="add-form">
-      <div class="add-edit" v-if="currentActiveStepIndex === 1">
-        <el-form :rules="editRules" label-width="140px" 
-          label-position="right" 
+      <div class="add-item edit" v-if="currentActiveStepIndex === 1">
+        <el-form
+          :rules="editRules"
+          label-width="140px"
+          label-position="right"
           ref="serviceTypeFormModel"
-          :model="serviceTypeFormModel">
+          :model="serviceTypeFormModel"
+        >
           <el-form-item label="项目地址(github)" prop="addr">
             <el-input v-model="serviceTypeFormModel.addr"></el-input>
           </el-form-item>
@@ -28,88 +31,114 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="add-upload" v-else-if="currentActiveStepIndex === 2">
-
+      <div class="add-item upload" v-else-if="currentActiveStepIndex === 2">
+        <div class="upload-progress">
+          <!-- TODO: 动画采用canvas绘制 -->
+          <el-progress type="circle" :percentage="downloadPercentage" :status="downloadStatus"></el-progress>
+          <p>Downloading</p>
+        </div>
+        <!-- <div class="deploy-progress">
+          <div class="deploy-step" v-for="deployStep in deploySteps" :key="deployStep.index">
+            <i :class="deployStep.icon"></i>
+            <span>{{deployStep.title}}</span>
+          </div>
+        </div>-->
       </div>
-      <div class="add-config" v-else></div>
+      <div class="add-item config" v-else></div>
     </div>
 
     <div class="btn-group">
-      <el-button v-show="currentActiveStepIndex !== 1"
-        @click="handlePreStep"
-      >上一步</el-button>
-      <el-button type="primary" v-show="currentActiveStepIndex !== 3"
-        @click="handleNextStep"
-      >下一步</el-button>
+      <el-button v-show="currentActiveStepIndex !== 1" @click="handlePreStep">上一步</el-button>
+      <el-button type="primary" v-show="currentActiveStepIndex !== 3" @click="handleNextStep">下一步</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import { Request } from "@/utils/request.js";
+import URL_COLLECTION from "../utils/url.js";
+
 export default {
   name: "addService",
   data() {
     return {
+      timerId: "",
       formValidateResult: false,
-      currentActiveStepIndex: 1,
+      currentActiveStepIndex: 2,
       serviceTypeFormModel: {
-        addr: "git@github.com:PeterChen1997/Mangosteen.git",
+        addr: "https://codeload.github.com/nodegit/nodegit/zip/master",
         name: "service-test",
         type: "Node.js"
       },
       editRules: {
-        addr: [
-          { required: true, message: '请输入项目地址', trigger: 'blur' }
-        ],
+        addr: [{ required: true, message: "请输入项目地址", trigger: "blur" }],
         name: [
-          { required: true, message: '请输入服务名称', trigger: 'blur' },
-          { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+          { required: true, message: "请输入服务名称", trigger: "blur" },
+          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
-        type: [
-          { required: true, message: '请输入服务类型', trigger: 'blur' }
-        ],
-      }
+        type: [{ required: true, message: "请输入服务类型", trigger: "blur" }]
+      },
+      downloadPercentage: 50,
+      downloadStatus: null,
+      deploySteps: [
+        { icon: "el-icon-loading", title: "服务文件完备性检查中" },
+        { icon: "el-icon-time", title: "服务文件合法性检查中" },
+        { icon: "el-icon-time", title: "服务部署中" }
+      ]
     };
+  },
+  mounted() {
+    this.serviceDownload();
   },
   methods: {
     handleNextStep() {
       // choose handler
-      this.currentActiveStepIndex === 1 
+      this.currentActiveStepIndex === 1
         ? this.handleServiceType()
         : this.currentActiveStepIndex === 2
-          ? this.handleServiceUpload()
-          : this.handleServiceConfig()
+        ? this.handleServiceDownload()
+        : this.handleServiceConfig();
 
       if (this.formValidateResult) {
-        this.currentActiveStepIndex += 1
+        this.currentActiveStepIndex += 1;
       }
     },
     handlePreStep() {
-      this.currentActiveStepIndex -= 1
+      this.currentActiveStepIndex -= 1;
     },
     handleServiceType() {
       // validate form
-      this.$refs['serviceTypeFormModel'].validate((valid) => {
-          if (valid) {
-            this.formValidateResult = true
+      this.$refs["serviceTypeFormModel"].validate(valid => {
+        if (valid) {
+          this.formValidateResult = true;
 
-            // start download service file
-            this.downloadServiceFile()
-          } else {
-            this.formValidateResult = false
-          }
-        });
+          // start download service file
+          this.serviceDownload();
+        } else {
+          this.formValidateResult = false;
+        }
+      });
     },
-    downloadServiceFile() {
-      // check addr
+    serviceDownload() {
+      const handleRes = (res) => {
+        console.log(res)
+        if (res instanceof Error) {
+          this.downloadStatus = 'exception'
+        } else {
+          
+        }
+      }
 
-      // check space
+      console.log("start download");
+      // start comunicate to server
 
-      // download
+      Request.get(URL_COLLECTION["DOWNLOAD_SERVICE"], this.serviceTypeFormModel, handleRes)
+      // this.timerId = setInterval(
+      //   () => Request.get(URL_COLLECTION["DOWNLOAD_SERVICE"], handleRes),
+      //   1000
+      // );
 
-      // check file type
-
-      // complete
+      // long
     }
   }
 };
@@ -122,7 +151,7 @@ export default {
   margin: 50px auto;
 }
 
-.add-edit {
+.add-item {
   width: 50%;
   margin: auto;
 }
@@ -130,5 +159,16 @@ export default {
 .btn-group {
   display: flex;
   justify-content: center;
+}
+
+.upload {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-progress {
+  text-align: center;
 }
 </style>
